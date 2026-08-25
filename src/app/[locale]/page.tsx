@@ -1,0 +1,33 @@
+import { useTranslations } from "next-intl";
+
+import ContentList from "@/features/content/ui/ContentList";
+
+import LanguageSwitcher from "./LanguageSwitcher";
+
+export default function Home() {
+  const t = useTranslations("page");
+
+  return (
+    <main className="min-h-screen bg-zinc-50 px-6 py-12 font-sans sm:px-10">
+      <div className="mx-auto max-w-5xl">
+        <header className="mb-8">
+          <div className="flex items-start justify-between gap-6">
+            <div>
+              <p className="text-sm font-semibold text-blue-600">
+                {t("eyebrow")}
+              </p>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-zinc-950">
+                {t("title")}
+              </h1>
+              <p className="mt-2 text-zinc-600">{t("description")}</p>
+            </div>
+
+            <LanguageSwitcher />
+          </div>
+        </header>
+
+        <ContentList />
+      </div>
+    </main>
+  );
+}

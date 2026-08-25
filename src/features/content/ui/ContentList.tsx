@@ -1,14 +1,16 @@
 "use client";
 
 import { useContents } from "@/features/content/hooks/useContents";
+import { useTranslations } from "next-intl";
 
 export default function ContentList() {
   const { data: contents, error, isPending, refetch } = useContents();
+  const t = useTranslations("content");
 
   if (isPending) {
     return (
       <p className="rounded-xl border border-zinc-200 bg-white p-6 text-zinc-500">
-        콘텐츠를 불러오는 중입니다.
+        {t("loading")}
       </p>
     );
   }
@@ -19,13 +21,13 @@ export default function ContentList() {
         className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700"
         role="alert"
       >
-        <p>{error.message}</p>
+        <p>{t("error")}</p>
         <button
           className="mt-4 rounded-lg bg-red-700 px-4 py-2 text-sm font-semibold text-white hover:bg-red-800"
           onClick={() => refetch()}
           type="button"
         >
-          다시 시도
+          {t("retry")}
         </button>
       </div>
     );
@@ -34,7 +36,7 @@ export default function ContentList() {
   if (!contents.length) {
     return (
       <p className="rounded-xl border border-zinc-200 bg-white p-6 text-zinc-500">
-        등록된 콘텐츠가 없습니다.
+        {t("empty")}
       </p>
     );
   }
@@ -47,7 +49,7 @@ export default function ContentList() {
           className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm"
         >
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
-            Content #{content.id}
+            {t("itemLabel", { id: content.id })}
           </p>
           <h2 className="text-lg font-semibold text-zinc-950">
             {content.title}
