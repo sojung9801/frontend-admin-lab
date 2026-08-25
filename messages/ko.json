@@ -3,8 +3,20 @@
     "loading": "콘텐츠를 불러오는 중입니다.",
     "retry": "다시 시도",
     "empty": "등록된 콘텐츠가 없습니다.",
+    "noResults": "검색 조건에 맞는 콘텐츠가 없습니다.",
     "error": "콘텐츠를 불러오지 못했습니다.",
-    "itemLabel": "콘텐츠 #{id}"
+    "updating": "검색 결과를 갱신하는 중입니다.",
+    "itemLabel": "콘텐츠 #{id}",
+    "filters": {
+      "searchLabel": "제목 검색",
+      "searchPlaceholder": "검색어를 입력하세요",
+      "statusLabel": "상태",
+      "all": "전체"
+    },
+    "status": {
+      "published": "게시됨",
+      "draft": "초안"
+    }
   },
   "page": {
     "eyebrow": "관리자",

@@ -3,8 +3,20 @@
     "loading": "Loading content...",
     "retry": "Try again",
     "empty": "No content has been registered.",
+    "noResults": "No content matches your search criteria.",
     "error": "Failed to load content.",
-    "itemLabel": "Content #{id}"
+    "updating": "Updating search results...",
+    "itemLabel": "Content #{id}",
+    "filters": {
+      "searchLabel": "Search by title",
+      "searchPlaceholder": "Enter a search term",
+      "statusLabel": "Status",
+      "all": "All"
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft"
+    }
   },
   "page": {
     "eyebrow": "Admin",

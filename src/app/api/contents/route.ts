@@ -1,6 +1,17 @@
-import type { Content } from "@/features/content/model/content";
+import type {
+  Content,
+  ContentStatus,
+} from "@/features/content/model/content";
 
-export async function GET() {
+type SourceContent = Omit<Content, "status">;
+
+const contentStatuses = ["published", "draft"] as const;
+
+function isContentStatus(value: string): value is ContentStatus {
+  return contentStatuses.some((status) => status === value);
+}
+
+export async function GET(request: Request) {
   const apiUrl = process.env.API_URL;
 
   if (!apiUrl) {
@@ -10,9 +21,19 @@ export async function GET() {
     );
   }
 
+  const requestUrl = new URL(request.url);
+  const search = requestUrl.searchParams.get("search")?.trim().toLowerCase();
+  const statusParam = requestUrl.searchParams.get("status")?.trim();
+
+  if (statusParam && !isContentStatus(statusParam)) {
+    return Response.json(
+      { message: "지원하지 않는 콘텐츠 상태입니다." },
+      { status: 400 },
+    );
+  }
+
   try {
     const contentsUrl = new URL("/posts", apiUrl);
-    contentsUrl.searchParams.set("_limit", "12");
 
     const response = await fetch(contentsUrl, {
       cache: "no-store",
@@ -25,7 +46,22 @@ export async function GET() {
       );
     }
 
-    const contents = (await response.json()) as Content[];
+    const sourceContents = (await response.json()) as SourceContent[];
+    const contents = sourceContents
+      .map<Content>((content) => ({
+        ...content,
+        status: content.id % 3 === 0 ? "draft" : "published",
+      }))
+      .filter((content) => {
+        const matchesSearch = search
+          ? content.title.toLowerCase().includes(search)
+          : true;
+        const matchesStatus = statusParam
+          ? content.status === statusParam
+          : true;
+
+        return matchesSearch && matchesStatus;
+      });
 
     return Response.json(contents);
   } catch {
