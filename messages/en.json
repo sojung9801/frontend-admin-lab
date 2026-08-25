@@ -1,0 +1,23 @@
+{
+  "content": {
+    "loading": "Loading content...",
+    "retry": "Try again",
+    "empty": "No content has been registered.",
+    "error": "Failed to load content.",
+    "itemLabel": "Content #{id}"
+  },
+  "page": {
+    "eyebrow": "Admin",
+    "title": "Content list",
+    "description": "View and manage registered content."
+  },
+  "language": {
+    "label": "Language",
+    "ko": "Korean",
+    "en": "English"
+  },
+  "metadata": {
+    "title": "Content Admin",
+    "description": "An admin service for managing content"
+  }
+}

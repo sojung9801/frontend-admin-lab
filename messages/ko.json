@@ -1,0 +1,23 @@
+{
+  "content": {
+    "loading": "콘텐츠를 불러오는 중입니다.",
+    "retry": "다시 시도",
+    "empty": "등록된 콘텐츠가 없습니다.",
+    "error": "콘텐츠를 불러오지 못했습니다.",
+    "itemLabel": "콘텐츠 #{id}"
+  },
+  "page": {
+    "eyebrow": "관리자",
+    "title": "콘텐츠 목록",
+    "description": "등록된 콘텐츠를 확인하고 관리하세요."
+  },
+  "language": {
+    "label": "언어",
+    "ko": "한국어",
+    "en": "영어"
+  },
+  "metadata": {
+    "title": "콘텐츠 관리",
+    "description": "콘텐츠를 관리하는 어드민 서비스"
+  }
+}
