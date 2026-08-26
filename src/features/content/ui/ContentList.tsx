@@ -11,6 +11,9 @@ import type {
 
 type StatusFilter = ContentFilters["status"];
 
+const paginationButtonClassName =
+  "rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-40";
+
 const statusBadgeClassName: Record<ContentStatus, string> = {
   published:
     "rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700",
@@ -21,10 +24,24 @@ const statusBadgeClassName: Record<ContentStatus, string> = {
 export default function ContentList() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
-  const { data: contents, error, isFetching, isPending, refetch } =
-    useContents({ search, status });
+  const [page, setPage] = useState(1);
+  const { data, error, isFetching, isPending, refetch } = useContents({
+    search,
+    status,
+    page,
+  });
   const t = useTranslations("content");
   const hasFilters = search.trim().length > 0 || status !== "all";
+
+  function changeSearch(nextSearch: string) {
+    setSearch(nextSearch);
+    setPage(1);
+  }
+
+  function changeStatus(nextStatus: StatusFilter) {
+    setStatus(nextStatus);
+    setPage(1);
+  }
 
   return (
     <section aria-busy={isFetching}>
@@ -36,7 +53,7 @@ export default function ContentList() {
           {t("filters.searchLabel")}
           <input
             className="rounded-lg border border-zinc-300 px-3 py-2.5 font-normal text-zinc-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => changeSearch(event.target.value)}
             placeholder={t("filters.searchPlaceholder")}
             type="search"
             value={search}
@@ -48,7 +65,7 @@ export default function ContentList() {
           <select
             className="rounded-lg border border-zinc-300 bg-white px-3 py-2.5 font-normal text-zinc-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             onChange={(event) =>
-              setStatus(event.target.value as StatusFilter)
+              changeStatus(event.target.value as StatusFilter)
             }
             value={status}
           >
@@ -86,34 +103,64 @@ export default function ContentList() {
             {t("retry")}
           </button>
         </div>
-      ) : contents.length === 0 ? (
+      ) : data.items.length === 0 ? (
         <p className="rounded-xl border border-zinc-200 bg-white p-6 text-zinc-500">
           {t(hasFilters ? "noResults" : "empty")}
         </p>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2">
-          {contents.map((content) => (
-            <li
-              key={content.id}
-              className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm"
-            >
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                  {t("itemLabel", { id: content.id })}
+        <>
+          <ul className="grid gap-4 md:grid-cols-2">
+            {data.items.map((content) => (
+              <li
+                key={content.id}
+                className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm"
+              >
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    {t("itemLabel", { id: content.id })}
+                  </p>
+                  <span className={statusBadgeClassName[content.status]}>
+                    {t(`status.${content.status}`)}
+                  </span>
+                </div>
+                <h2 className="text-lg font-semibold text-zinc-950">
+                  {content.title}
+                </h2>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-zinc-600">
+                  {content.body}
                 </p>
-                <span className={statusBadgeClassName[content.status]}>
-                  {t(`status.${content.status}`)}
-                </span>
-              </div>
-              <h2 className="text-lg font-semibold text-zinc-950">
-                {content.title}
-              </h2>
-              <p className="mt-3 line-clamp-3 text-sm leading-6 text-zinc-600">
-                {content.body}
-              </p>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+
+          <nav
+            aria-label={t("pagination.label")}
+            className="mt-8 flex items-center justify-center gap-4"
+          >
+            <button
+              className={paginationButtonClassName}
+              disabled={!data.pagination.hasPreviousPage || isFetching}
+              onClick={() => setPage((currentPage) => currentPage - 1)}
+              type="button"
+            >
+              {t("pagination.previous")}
+            </button>
+            <p className="min-w-28 text-center text-sm font-medium text-zinc-600">
+              {t("pagination.current", {
+                page: data.pagination.page,
+                totalPages: data.pagination.totalPages,
+              })}
+            </p>
+            <button
+              className={paginationButtonClassName}
+              disabled={!data.pagination.hasNextPage || isFetching}
+              onClick={() => setPage((currentPage) => currentPage + 1)}
+              type="button"
+            >
+              {t("pagination.next")}
+            </button>
+          </nav>
+        </>
       )}
     </section>
   );

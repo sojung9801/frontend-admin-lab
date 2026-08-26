@@ -16,6 +16,12 @@
     "status": {
       "published": "게시됨",
       "draft": "초안"
+    },
+    "pagination": {
+      "label": "콘텐츠 페이지 이동",
+      "previous": "이전",
+      "next": "다음",
+      "current": "{page} / {totalPages} 페이지"
     }
   },
   "page": {

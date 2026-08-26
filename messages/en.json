@@ -16,6 +16,12 @@
     "status": {
       "published": "Published",
       "draft": "Draft"
+    },
+    "pagination": {
+      "label": "Content pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "current": "Page {page} of {totalPages}"
     }
   },
   "page": {

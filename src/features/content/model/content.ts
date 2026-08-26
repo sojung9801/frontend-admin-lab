@@ -11,4 +11,17 @@ export type Content = {
 export type ContentFilters = {
   search: string;
   status: ContentStatus | "all";
+  page: number;
+};
+
+export type ContentsResponse = {
+  items: Content[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  };
 };

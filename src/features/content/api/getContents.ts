@@ -1,6 +1,6 @@
 import type {
-  Content,
   ContentFilters,
+  ContentsResponse,
 } from "@/features/content/model/content";
 
 const CONTENTS_API_URL = "/api/contents";
@@ -8,9 +8,12 @@ const CONTENTS_API_URL = "/api/contents";
 export async function getContents({
   search,
   status,
-}: ContentFilters): Promise<Content[]> {
+  page,
+}: ContentFilters): Promise<ContentsResponse> {
   const searchParams = new URLSearchParams();
   const normalizedSearch = search.trim();
+
+  searchParams.set("page", String(page));
 
   if (normalizedSearch) {
     searchParams.set("search", normalizedSearch);
@@ -20,9 +23,7 @@ export async function getContents({
     searchParams.set("status", status);
   }
 
-  const query = searchParams.toString();
-  const requestUrl = query ? `${CONTENTS_API_URL}?${query}` : CONTENTS_API_URL;
-  const response = await fetch(requestUrl);
+  const response = await fetch(`${CONTENTS_API_URL}?${searchParams.toString()}`);
 
   if (!response.ok) {
     const errorBody = (await response.json().catch(() => null)) as {
@@ -35,5 +36,5 @@ export async function getContents({
     );
   }
 
-  return response.json() as Promise<Content[]>;
+  return response.json() as Promise<ContentsResponse>;
 }
