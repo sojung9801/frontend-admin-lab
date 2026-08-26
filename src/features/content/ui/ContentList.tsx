@@ -1,13 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 import { useContents } from "@/features/content/hooks/useContents";
+import ContentListLoading from "@/features/content/ui/ContentListLoading";
 import type {
   ContentFilters,
   ContentStatus,
 } from "@/features/content/model/content";
+import {
+  areContentFiltersEqual,
+  createContentUrl,
+  hasInvalidPage,
+  parseContentFilters,
+  removeInvalidPage,
+} from "@/features/content/model/contentQuery";
 
 type StatusFilter = ContentFilters["status"];
 
@@ -22,25 +31,45 @@ const statusBadgeClassName: Record<ContentStatus, string> = {
 };
 
 export default function ContentList() {
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [page, setPage] = useState(1);
-  const { data, error, isFetching, isPending, refetch } = useContents({
-    search,
-    status,
-    page,
-  });
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const filters = parseContentFilters(searchParams);
+  const { search, status } = filters;
+  const { data, error, isFetching, isPending, refetch } = useContents(filters);
   const t = useTranslations("content");
-  const hasFilters = search.trim().length > 0 || status !== "all";
+  const hasFilters = search.length > 0 || status !== "all";
+
+  useEffect(() => {
+    if (!hasInvalidPage(searchParams)) {
+      return;
+    }
+
+    const correctedUrl = removeInvalidPage(pathname, searchParams);
+    router.replace(correctedUrl, { scroll: false });
+  }, [pathname, router, searchParams]);
+
+  function updateFilters(nextFilters: ContentFilters) {
+    const normalizedFilters = {
+      ...nextFilters,
+      search: nextFilters.search.trim(),
+    };
+
+    if (areContentFiltersEqual(filters, normalizedFilters)) {
+      return;
+    }
+
+    router.push(createContentUrl(pathname, normalizedFilters), {
+      scroll: false,
+    });
+  }
 
   function changeSearch(nextSearch: string) {
-    setSearch(nextSearch);
-    setPage(1);
+    updateFilters({ ...filters, search: nextSearch, page: 1 });
   }
 
   function changeStatus(nextStatus: StatusFilter) {
-    setStatus(nextStatus);
-    setPage(1);
+    updateFilters({ ...filters, status: nextStatus, page: 1 });
   }
 
   return (
@@ -83,12 +112,7 @@ export default function ContentList() {
       ) : null}
 
       {isPending ? (
-        <p
-          className="rounded-xl border border-zinc-200 bg-white p-6 text-zinc-500"
-          role="status"
-        >
-          {t("loading")}
-        </p>
+        <ContentListLoading />
       ) : error ? (
         <div
           className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700"
@@ -140,7 +164,9 @@ export default function ContentList() {
             <button
               className={paginationButtonClassName}
               disabled={!data.pagination.hasPreviousPage || isFetching}
-              onClick={() => setPage((currentPage) => currentPage - 1)}
+              onClick={() =>
+                updateFilters({ ...filters, page: filters.page - 1 })
+              }
               type="button"
             >
               {t("pagination.previous")}
@@ -154,7 +180,9 @@ export default function ContentList() {
             <button
               className={paginationButtonClassName}
               disabled={!data.pagination.hasNextPage || isFetching}
-              onClick={() => setPage((currentPage) => currentPage + 1)}
+              onClick={() =>
+                updateFilters({ ...filters, page: filters.page + 1 })
+              }
               type="button"
             >
               {t("pagination.next")}

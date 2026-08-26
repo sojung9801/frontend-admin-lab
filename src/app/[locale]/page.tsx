@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
+import { Suspense } from "react";
 
 import ContentList from "@/features/content/ui/ContentList";
+import ContentListLoading from "@/features/content/ui/ContentListLoading";
 
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -22,11 +24,15 @@ export default function Home() {
               <p className="mt-2 text-zinc-600">{t("description")}</p>
             </div>
 
-            <LanguageSwitcher />
+            <Suspense fallback={null}>
+              <LanguageSwitcher />
+            </Suspense>
           </div>
         </header>
 
-        <ContentList />
+        <Suspense fallback={<ContentListLoading />}>
+          <ContentList />
+        </Suspense>
       </div>
     </main>
   );
