@@ -38,12 +38,18 @@ test.beforeEach(async ({ page }) => {
       },
     });
   });
+
+  await page.goto("/ko/login");
+  await page.getByLabel("이메일").fill("admin@example.com");
+  await page.getByLabel("비밀번호").fill("admin1234");
+  await page.getByRole("button", { name: "로그인" }).click();
+  await expect(page).toHaveURL(/\/ko\/admin$/);
 });
 
 test("페이지 이동을 URL에 반영하고 새로고침 후에도 유지한다", async ({
   page,
 }) => {
-  await page.goto("/ko");
+  await page.goto("/ko/admin");
 
   const previousButton = page.getByRole("button", { name: "이전" });
   const nextButton = page.getByRole("button", { name: "다음" });
@@ -57,7 +63,7 @@ test("페이지 이동을 URL에 반영하고 새로고침 후에도 유지한�
 
   await nextButton.click();
 
-  await expect(page).toHaveURL(/\/ko\?page=2$/);
+  await expect(page).toHaveURL(/\/ko\/admin\?page=2$/);
   await expect(
     page.getByRole("heading", { name: "두 번째 페이지 콘텐츠" }),
   ).toBeVisible();
@@ -77,7 +83,7 @@ test("페이지 이동을 URL에 반영하고 새로고침 후에도 유지한�
 
   await previousButton.click();
 
-  await expect(page).toHaveURL(/\/ko$/);
+  await expect(page).toHaveURL(/\/ko\/admin$/);
   await expect(
     page.getByRole("heading", { name: "첫 페이지 콘텐츠 1", exact: true }),
   ).toBeVisible();
@@ -87,7 +93,7 @@ test("페이지 이동을 URL에 반영하고 새로고침 후에도 유지한�
 test("URL의 검색어와 상태를 화면에 복원하고 변경 사항을 반영한다", async ({
   page,
 }) => {
-  await page.goto("/ko?page=2&search=react&status=published");
+  await page.goto("/ko/admin?page=2&search=react&status=published");
 
   await expect(page.getByLabel("제목 검색")).toHaveValue("react");
   await expect(page.getByLabel("상태")).toHaveValue("published");
@@ -101,19 +107,23 @@ test("URL의 검색어와 상태를 화면에 복원하고 변경 사항을 반�
 
   await page.getByLabel("제목 검색").fill("next");
 
-  await expect(page).toHaveURL(/\/ko\?search=next&status=published$/);
+  await expect(page).toHaveURL(
+    /\/ko\/admin\?search=next&status=published$/,
+  );
   await expect(page.getByText("1 / 2 페이지")).toBeVisible();
 
   await page.getByLabel("언어").selectOption("en");
 
-  await expect(page).toHaveURL(/\/en\?search=next&status=published$/);
+  await expect(page).toHaveURL(
+    /\/en\/admin\?search=next&status=published$/,
+  );
   await expect(page.getByLabel("Search by title")).toHaveValue("next");
 });
 
 test("잘못된 page 값을 1페이지로 보정한다", async ({ page }) => {
-  await page.goto("/ko?page=invalid&search=react");
+  await page.goto("/ko/admin?page=invalid&search=react");
 
-  await expect(page).toHaveURL(/\/ko\?search=react$/);
+  await expect(page).toHaveURL(/\/ko\/admin\?search=react$/);
   await expect(page.getByLabel("제목 검색")).toHaveValue("react");
   await expect(page.getByText("1 / 2 페이지")).toBeVisible();
 });

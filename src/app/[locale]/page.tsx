@@ -1,39 +1,14 @@
-import { useTranslations } from "next-intl";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import ContentList from "@/features/content/ui/ContentList";
-import ContentListLoading from "@/features/content/ui/ContentListLoading";
+import { getCurrentUser } from "@/features/auth/server/session";
 
-import LanguageSwitcher from "./LanguageSwitcher";
+type HomePageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-export default function Home() {
-  const t = useTranslations("page");
+export default async function Home({ params }: HomePageProps) {
+  const { locale } = await params;
+  const user = await getCurrentUser();
 
-  return (
-    <main className="min-h-screen bg-zinc-50 px-6 py-12 font-sans sm:px-10">
-      <div className="mx-auto max-w-5xl">
-        <header className="mb-8">
-          <div className="flex items-start justify-between gap-6">
-            <div>
-              <p className="text-sm font-semibold text-blue-600">
-                {t("eyebrow")}
-              </p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-zinc-950">
-                {t("title")}
-              </h1>
-              <p className="mt-2 text-zinc-600">{t("description")}</p>
-            </div>
-
-            <Suspense fallback={null}>
-              <LanguageSwitcher />
-            </Suspense>
-          </div>
-        </header>
-
-        <Suspense fallback={<ContentListLoading />}>
-          <ContentList />
-        </Suspense>
-      </div>
-    </main>
-  );
+  redirect(`/${locale}/${user ? "admin" : "login"}`);
 }

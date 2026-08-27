@@ -7,6 +7,16 @@ test("미로그인 사용자를 로그인 화면으로 이동시킨다", async (
   await expect(page.getByRole("heading", { name: "로그인" })).toBeVisible();
 });
 
+test("locale 루트에서는 콘텐츠를 노출하지 않고 로그인 화면으로 이동한다", async ({
+  page,
+}) => {
+  await page.goto("/ko");
+  await expect(page).toHaveURL(/\/ko\/login$/);
+
+  await page.goto("/en");
+  await expect(page).toHaveURL(/\/en\/login$/);
+});
+
 test("로그인 상태를 새로고침 후에도 유지하고 로그아웃한다", async ({
   page,
 }) => {
