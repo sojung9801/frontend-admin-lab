@@ -34,6 +34,31 @@
     "ko": "한국어",
     "en": "영어"
   },
+  "auth": {
+    "eyebrow": "Content Admin",
+    "title": "로그인",
+    "description": "관리자 서비스에 계속하려면 데모 계정으로 로그인하세요.",
+    "email": "이메일",
+    "password": "비밀번호",
+    "submit": "로그인",
+    "submitting": "로그인 중...",
+    "errors": {
+      "required": "이메일과 비밀번호를 모두 입력해 주세요.",
+      "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다."
+    },
+    "demo": {
+      "title": "데모 계정",
+      "admin": "관리자: admin@example.com / admin1234",
+      "viewer": "뷰어: viewer@example.com / viewer1234"
+    }
+  },
+  "admin": {
+    "logout": "로그아웃",
+    "roles": {
+      "admin": "관리자",
+      "viewer": "뷰어"
+    }
+  },
   "metadata": {
     "title": "콘텐츠 관리",
     "description": "콘텐츠를 관리하는 어드민 서비스"

@@ -16,6 +16,15 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Demo login
+
+- Admin: `admin@example.com` / `admin1234`
+- Viewer: `viewer@example.com` / `viewer1234`
+
+Local development uses a development-only session secret. Before running the app
+in production, set `SESSION_SECRET` to a sufficiently long random value (for
+example, one generated with `openssl rand -base64 32`).
+
 ## Testing
 
 ```bash

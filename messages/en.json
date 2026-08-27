@@ -34,6 +34,31 @@
     "ko": "Korean",
     "en": "English"
   },
+  "auth": {
+    "eyebrow": "Content Admin",
+    "title": "Sign in",
+    "description": "Sign in with a demo account to continue to the admin service.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "errors": {
+      "required": "Enter both your email and password.",
+      "invalidCredentials": "The email or password is incorrect."
+    },
+    "demo": {
+      "title": "Demo accounts",
+      "admin": "Admin: admin@example.com / admin1234",
+      "viewer": "Viewer: viewer@example.com / viewer1234"
+    }
+  },
+  "admin": {
+    "logout": "Sign out",
+    "roles": {
+      "admin": "Admin",
+      "viewer": "Viewer"
+    }
+  },
   "metadata": {
     "title": "Content Admin",
     "description": "An admin service for managing content"
