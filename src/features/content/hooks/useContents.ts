@@ -2,18 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getContents } from "@/features/content/api/getContents";
 import type { ContentFilters } from "@/features/content/model/content";
+import { contentListQueryOptions } from "@/features/content/model/contentQueries";
 
 export function useContents(filters: ContentFilters) {
-  return useQuery({
-    queryKey: [
-      "contents",
-      filters.search.trim(),
-      filters.status,
-      filters.page,
-    ],
-    queryFn: () => getContents(filters),
-    staleTime: 60_000,
-  });
+  return useQuery(contentListQueryOptions(filters));
 }
